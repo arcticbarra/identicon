@@ -1,5 +1,11 @@
 defmodule Identicon do
+  @moduledoc """
+    Creates an Identicon based on an input.
+  """
 
+  @doc """
+    Takes `input` and pipes it through the rest of the helper functions
+  """
   def main(input) do
     input
     |> hash_input
@@ -11,6 +17,9 @@ defmodule Identicon do
     |> save_image(input)
   end
 
+  @doc """
+    Hashes the `input` using md5
+  """
   def hash_input(input) do
     hex = :crypto.hash(:md5,input)
     |> :binary.bin_to_list
@@ -18,10 +27,16 @@ defmodule Identicon do
     %Identicon.Image{hex: hex}
   end
 
+  @doc """
+    Picks a color using the first three numbers of the hash
+  """
   def pick_color(%Identicon.Image{hex: [r,g,b | _tail]} = image) do
     %Identicon.Image{image | color: {r, g, b}}
   end
 
+  @doc """
+    Builds a grid using the hash
+  """
   def build_grid(%Identicon.Image{hex: hex} = image) do
     grid =
       hex
@@ -33,11 +48,17 @@ defmodule Identicon do
     %Identicon.Image {image | grid: grid}
   end
 
+  @doc """
+    Helper function, mirrors each row in the grid
+  """
   def mirror_row(row) do
     [first, second | _tail] = row
     row ++ [second, first]
   end
 
+  @doc """
+    Deletes the odd squares in the grid, the ones which wont be colored
+  """
   def filter_odd_squares(%Identicon.Image{grid: grid} = image) do
     grid = Enum.filter grid, fn({code, _index}) ->
       rem(code,2) == 0
@@ -46,6 +67,9 @@ defmodule Identicon do
     %Identicon.Image{image | grid: grid}
   end
 
+  @doc """
+    Builds a pixel map using the grid, returns a tuple of `top_left` and `bottom_right`
+  """
   def build_pixel_map(%Identicon.Image{grid: grid} = image) do
     pixel_map = Enum.map grid, fn({_code, index}) ->
       horizontal = rem(index,5) * 50
@@ -58,6 +82,9 @@ defmodule Identicon do
     %Identicon.Image{image | pixel_map: pixel_map}
   end
 
+  @doc """
+    Draws an image using Erlang's egd. It takes the color and the pixel map
+  """
   def draw_image(%Identicon.Image{color: color, pixel_map: pixel_map}) do
     image = :egd.create(250, 250)
     fill = :egd.color(color)
@@ -69,6 +96,9 @@ defmodule Identicon do
     :egd.render(image)
   end
 
+  @doc """
+    Saves an image using the input given
+  """
   def save_image(image, input) do
     File.write("#{input}.png", image)
   end

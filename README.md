@@ -1,23 +1,11 @@
 # Identicon
 
-Generates an [Identicon](https://en.wikipedia.org/wiki/Identicon) based on a given string input.
+Generates an [Identicon](https://en.wikipedia.org/wiki/Identicon) based on a given string input. Made using Elixir and Erlang's EGD for image creation.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+Clone this repository into your computer using `git clone`.
 
-  1. Add `identicon` to your list of dependencies in `mix.exs`:
+## Usage
 
-    ```elixir
-    def deps do
-      [{:identicon, "~> 0.1.0"}]
-    end
-    ```
-
-  2. Ensure `identicon` is started before your application:
-
-    ```elixir
-    def application do
-      [applications: [:identicon]]
-    end
-    ```
+Using the terminal switch to the proyect directory. Run `iex -S mix` in the Terminal, then type `Identicon.main("yourinput")`, the file will be saved to the proyect directory.
